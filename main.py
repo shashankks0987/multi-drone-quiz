@@ -33,7 +33,8 @@ def esdf(M, N, obstacle_list):
 
 def get_euc(M, N, grid):
     g = np.array([[None for _ in range(N)] for _ in range(M)])
-    res1 = np.array([[None for _ in range(N)] for _ in range(M)])
+    distance_transform = np.array([[None for _ in range(N)] for _ in range(M)])
+    # Scan 1
     for i in range(M):
         if grid[i][0] - 1.0 == 0:
             g[i][0] = 0.0
@@ -50,10 +51,12 @@ def get_euc(M, N, grid):
                     g[i][j] = 1 + g[i][j + 1]
     s = [0] * M
     t = [0] * M
+    # Scan 2
     for j in range(N):
         q = 0
         s[0] = 0
         t[0] = 0
+        # Scan 3
         for u in range(1, M):
             while q >= 0 and (calc_distance(t[q], s[q], j, g) > calc_distance(t[q], u, j, g)):
                 q = q - 1
@@ -66,12 +69,12 @@ def get_euc(M, N, grid):
                     q = q + 1
                     s[q] = u
                     t[q] = w
-
+        # Scan 4
         for u in range(M - 1, -1, -1):
-            res1[u, j] = math.sqrt(calc_distance(u, s[q], j, g))
+            distance_transform[u, j] = math.sqrt(calc_distance(u, s[q], j, g))
             if u == t[q]:
                 q = q - 1
-    return res1
+    return distance_transform
 
 
 if __name__ == '__main__':
