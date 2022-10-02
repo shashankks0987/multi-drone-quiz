@@ -12,6 +12,13 @@ def sep(i, u, res, y):
     return math.floor((np.square(u) - np.square(i) + np.square(res[u][y]) - np.square(res[i][y])) / (2 * (u - i)))
 
 
+def fill_grid(M, N, obstacle_list):
+    grid = np.array([[0.0 for _ in range(N)] for _ in range(M)])
+    for k in obstacle_list:
+        grid[k[0]][k[1]] = 1.0
+    return grid
+
+
 def esdf(M, N, obstacle_list):
     """
     :param M: Row number
@@ -19,10 +26,8 @@ def esdf(M, N, obstacle_list):
     :param obstacle_list: Obstacle list
     :return: An array. The value of each cell means the closest distance to the obstacle
     """
-    grid = np.array([[0.0 for _ in range(N)] for _ in range(M)])
-    for k in obstacle_list:
-        grid[k[0]][k[1]] = 1.0
-    res = get_euc(M, N, grid)
+    grid_with_obstacles = fill_grid(M, N, obstacle_list)
+    res = get_euc(M, N, grid_with_obstacles)
     return res
 
 
@@ -76,4 +81,4 @@ if __name__ == '__main__':
         assert np.array_equal(esdf(M=4, N=5, obstacle_list=[[0, 1], [2, 2], [3, 1]]), res_2)
 
     et = time.time()
-    print(et-st)
+    print(et - st)
